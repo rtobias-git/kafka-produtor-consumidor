@@ -1,4 +1,4 @@
-# Sistema de Mensageria com Apache Kafka, Produtor em Python e Consumidor em Java
+# Aplicacao Produtor e Consumidor usando Apache Kafka - Fila de Mensagens
 
 Projeto desenvolvido para a disciplina de Sistemas Distribuidos, implementando o padrao de comunicacao assincrona Pub/Sub (Publish-Subscribe) utilizando Apache Kafka no modo KRaft (sem Zookeeper), com servicos conteinerizados via Docker e Docker Compose.
 
