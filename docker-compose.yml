@@ -1,5 +1,3 @@
-version: "3.8"
-
 networks:
   net-kafka:
     driver: bridge
@@ -37,12 +35,21 @@ services:
     volumes:
       - kafka_data:/var/lib/kafka/data
 
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 || exit 1"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 15s
+
   consumidor:
     image: tobiasrafaelrosa/kafka-fila-consumidor:latest
+    build: ./Consumidor
     container_name: consumidor
     restart: always
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_TOPIC: fila-pedidos
@@ -51,10 +58,12 @@ services:
 
   produtor:
     image: tobiasrafaelrosa/kafka-fila-produtor:latest
+    build: ./Produtor
     container_name: produtor
     restart: on-failure
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_TOPIC: fila-pedidos

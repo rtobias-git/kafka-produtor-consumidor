@@ -92,10 +92,10 @@ Na raiz do projeto, suba todos os servicos (o Kafka, o Consumidor e o Produtor s
 docker compose up -d
 ```
 
-Verifique o status dos conteineres em execucao:
+Verifique o status dos conteineres (o Kafka e o Consumidor permanecem ativos; o Produtor executa o envio dos 10 pedidos e finaliza com status 0):
 
 ```bash
-docker compose ps
+docker compose ps -a
 ```
 
 Visualize os logs do Consumidor (Java) processando os pedidos:
@@ -104,7 +104,7 @@ Visualize os logs do Consumidor (Java) processando os pedidos:
 docker compose logs -f consumidor
 ```
 
-Visualize os logs do Produtor (Python) com o envio dos 10 pedidos:
+Visualize os logs do Produtor (Python) com o envio e confirmacao dos 10 pedidos:
 
 ```bash
 docker compose logs produtor
