@@ -37,5 +37,29 @@ services:
     volumes:
       - kafka_data:/var/lib/kafka/data
 
+  consumidor:
+    image: tobiasrafaelrosa/kafka-fila-consumidor:latest
+    container_name: consumidor
+    restart: always
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: fila-pedidos
+    networks:
+      - net-kafka
+
+  produtor:
+    image: tobiasrafaelrosa/kafka-fila-produtor:latest
+    container_name: produtor
+    restart: on-failure
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_TOPIC: fila-pedidos
+    networks:
+      - net-kafka
+
 volumes:
   kafka_data:

@@ -59,7 +59,7 @@ As imagens de cada servico foram compiladas e estao disponiveis publicamente no 
 
 ```text
 ProjetoSistemasDistribuidos/
-├── docker-compose.yml          # Orquestracao do broker Apache Kafka em modo KRaft
+├── docker-compose.yml          # Orquestracao dos servicos (Kafka, Consumidor e Produtor via Docker Hub)
 ├── .gitignore                  # Arquivos ignorados pelo Git
 ├── README.md                   # Documentacao completa da solucao
 ├── docs/
@@ -84,61 +84,59 @@ ProjetoSistemasDistribuidos/
 
 ---
 
-### Passo 1: Inicializar o Broker Kafka
+### Execucao Completa via Docker Compose (Docker Hub)
 
-Na raiz do projeto, suba o conteiner do Kafka:
+Na raiz do projeto, suba todos os servicos (o Kafka, o Consumidor e o Produtor serao inicializados utilizando as imagens do Docker Hub):
 
 ```bash
 docker compose up -d
 ```
 
-Verifique se o broker esta em execucao:
+Verifique o status dos conteineres em execucao:
 
 ```bash
 docker compose ps
 ```
 
----
-
-### Passo 2: Executar o Consumidor (Java)
-
-Em um terminal, inicie o consumidor conectado a rede do Kafka:
+Visualize os logs do Consumidor (Java) processando os pedidos:
 
 ```bash
-docker run --rm -it --network net-kafka tobiasrafaelrosa/kafka-fila-consumidor:1.0
+docker compose logs -f consumidor
 ```
 
-O consumidor ficara aguardando o envio de novas mensagens:
-```text
-Consumidor esperando pedidos...
-```
-
----
-
-### Passo 3: Executar o Produtor (Python)
-
-Em outro terminal, execute o produtor para despachar os 10 pedidos:
+Visualize os logs do Produtor (Python) com o envio dos 10 pedidos:
 
 ```bash
-docker run --rm -it --network net-kafka tobiasrafaelrosa/kafka-fila-produtor:1.0
+docker compose logs produtor
 ```
 
-O produtor exibira o envio e a confirmacao de cada item na fila:
-```text
-Produtor colocando pedidos na fila...
-Produtor enviou: Pedido 1: pizza
-  broker guardou na posicao 0 da fila
-...
-Produtor acabou, os 10 pedidos estao na fila do broker
-```
+Caso queira disparar novamente o lote de 10 pedidos pelo produtor:
 
-Automaticamente, o terminal do consumidor recebera e exibira os 10 itens processados.
+```bash
+docker compose start produtor
+```
 
 ---
 
-### Passo 4: Encerrar o Ambiente
+### Execucao Individual dos Conteineres (Opcional)
 
-Para parar o broker Kafka:
+Caso prefira executar os conteineres manualmente em terminais separados via `docker run`:
+
+1. Consumidor (Java):
+```bash
+docker run --rm -it --network net-kafka tobiasrafaelrosa/kafka-fila-consumidor:latest
+```
+
+2. Produtor (Python):
+```bash
+docker run --rm -it --network net-kafka tobiasrafaelrosa/kafka-fila-produtor:latest
+```
+
+---
+
+### Encerrar o Ambiente
+
+Para parar todos os conteineres e desmontar a rede:
 
 ```bash
 docker compose down
